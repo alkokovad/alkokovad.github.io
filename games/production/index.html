@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="apple-mobile-web-app-capable" content="no" /> 
+	<meta name="apple-touch-fullscreen" content="yes" />
+	<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0, target-densitydpi=device-dpi">
+    
+    <!-- Touch icons -->
+    <link rel="apple-touch-icon" href="img/icon-touch-60.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="img/icon-touch-76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="img/icon-touch-120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="img/icon-touch-152.png">
+    <link rel="apple-touch-icon" sizes="196x196" href="img/icon-touch-196.png">
+
+    <!-- Third party -->
+    <link rel="stylesheet" href="css/libraries/sc-btn.css" type="text/css">
+	<link rel="stylesheet" href="css/libraries/animate.css" type="text/css">
+
+    <!-- Space Rocks -->
+    <link rel="stylesheet" href="css/fonts.css" type="text/css">
+	<link rel="stylesheet" href="css/style.css" type="text/css">
+
+	<!-- Third party  -->
+    <script src="js/libraries/fastclick.js"></script>
+	<script src="js/libraries/jquery.2.1.1.min.js"></script>
+	<script src="js/libraries/tweenjs-0.5.1.min.js"></script>
+    <script src="js/libraries/easeljs-0.7.1.min.js"></script>
+    <script src="js/easeljs-extensions.js"></script>
+
+    <!-- Third party -->
+    <script src="js/libraries/SAT.js"></script>
+    <script src="js/libraries/stats.min.js"></script>
+	<script src="js/libraries/linked-list.min.js"></script>
+
+	<!-- Space Rocks components, util classes -->
+    <script src="js/utils/env.js"></script>
+	<script src="js/utils/HUD.js"></script>
+    <script src="js/utils/Observers.js"></script>
+    <script src="js/utils/Social.js"></script>
+
+    <!-- Space Rocks, physics -->
+    <script src="js/physics/Physics.js"></script>
+    <script src="js/physics/CollisionHandler.js"></script>
+
+    <!-- Space Rocks components, entities -->
+    <script src="js/entities/Entity.js"></script>
+    <script src="js/entities/Asteroid.js"></script>
+    <script src="js/entities/Particle.js"></script>
+    <script src="js/entities/MissileExplosion.js"></script>
+    <script src="js/entities/Missile.js"></script>
+    <script src="js/entities/Player.js"></script>
+    <script src="js/entities/Lazer.js"></script>
+    <script src="js/entities/Alien.js"></script>
+
+    <!-- Space Rocks Game -->
+	<script src="js/main.js"></script>
+</head>
+<body ontouchmove="event.preventDefault()" class="animated fadeIn">
+    <div class="touch-splash splash">
+        <div class="container">
+            <div class="logo">
+                <span>Space</span>
+                <span class="extra-bold ">Rocks</span>
+            </div>
+            <div class="tagline light">A modern take on an arcade classic</div>
+            <div class="red line"></div>
+            <h3 class="normal">Download the app below</h3>
+            <div class="download">
+                <img class="ios" width="150px" src="img/store-ios.png">
+                <img class="android" width="150px" src="img/store-android.png">
+            </div>
+            <a href="#" class="play-now">
+                Or play online now
+            </a>
+        </div>
+    </div>
+    <div class="unsupported-browser-splash splash">
+        <div class="container">
+            <div class="logo">
+                <span>Space</span>
+                <span class="extra-bold ">Rocks</span>
+            </div>
+            <div class="tagline light">A modern take on an arcade classic</div>
+            <div class="red line"></div>
+            <h2 class="bold">Uhoh!</h2>
+            <h3 class="normal">Looks like we don't support your browser</h3>
+            <div class="download">
+                <a href="https://www.google.co.uk/intl/en_uk/chrome/browser/">
+                    <img class="chrome" width="150px" src="img/logo-chrome.png">
+                    <span>Download Chrome</span>
+                </a>
+
+                <a href="http://www.mozilla.org/en-GB/firefox/new/">
+                    <img class="firefox" width="150px" src="img/logo-firefox.png">
+                    <span>Download Firefox</span>
+                </a>
+                <br />
+            </div>
+        </div>
+    </div>
+    <div class="game-container container">
+        <div class="column-5 column">
+            <img class="game-shim" src="img/iphone-shim.png" width="320px;">
+            <div class="game">
+            	<div id="ui">
+                	<div id="in-game">
+                		<div id="score">
+                            <div class="score inactive"></div>
+                            <div class="score inactive"></div>
+                            <div class="score inactive"></div>
+                            <div class="score inactive"></div>
+                            <div class="score inactive"></div>
+                        </div>
+                		<div id="hud">
+                			<div id="lives">
+                				<div id="lives-container">
+            	    				<div class="life"></div>
+            	    				<div class="life"></div>
+            	    				<div class="life"></div>
+                				</div>
+                			</div>
+                			<div id="points">
+                				<div id="points-container">
+            	    				<div id="count">0</div>
+            	    				<div id="multiplier"><sup>x1</sup></div>
+                				</div>
+                			</div>
+                			<div id="missiles">
+                				<div class="missile"></div>
+                				<div class="missile"></div>
+                				<div class="missile"></div>
+                				<div class="missile"></div>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+                <div id="level-up">
+                    <h2>Level <span class="level">?</span></h2>
+                    <span>(multiplier x <span class="level">?</span>)</span>
+                </div>
+                <div id="intro">
+                    <span class="title-wrapper">
+                        <span class="title">
+                        	<h1 class="light">Space</h1>
+                        	<div class="line red slideInLeft animated"></div>
+                        	<h1 class="extra-bold">Rocks</h1>
+                        </span>
+                    </span>
+                    <span class="start-wrapper">
+                        <span class="start">
+                    	   <div class="button">Start</div>
+                        </span>
+                    </span>
+                </div>
+                <div id="game-over">
+                    <div class="background"></div>
+                    <span class="overlay-wrapper">
+                        <div class="overlay">
+                            <div class="panel-header rounded">Game over</div>
+                            <div class="panel-contents rounded">
+                                <div class="score">0</div>
+                                <div class="button">restart</div>
+                                <div class="red-line"></div>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+                <canvas id="game" screencanvas="true"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
