@@ -2,7 +2,6 @@ var Observers = (function() {
 	function Observers(spaceRocks, canvas) {
 		this.spaceRocks = spaceRocks;
 		this.canvas = canvas;
-		this.social = new Social();
 
 		this.mouseDown = null;
 		this.mouseUp = null;
@@ -17,7 +16,6 @@ var Observers = (function() {
 			this.attachToSplashScreen();
 			this.attachToButtons();
 			this.attachToCanvas();
-			this.attachToSocial();
 
 			// Prevent scrolling on page
 			document.addEventListener("touchstart", function() { return false; }, false);
@@ -137,17 +135,6 @@ var Observers = (function() {
 			 	this.mouseDown = null;
 			}.bind(this));
 		},
-		attachToSocial : function() {
-			// Social share buttons
-			$("#game-over .sc--facebook").click(function() {
-				this.social.postToFacebook(this.spaceRocks.score);
-				return false;
-			}.bind(this));
-			$("#game-over .sc--twitter").click(function() {
-				this.social.postToTwitter(this.spaceRocks.score);
-				return false;
-			}.bind(this))
-		}
 	}
 
 	return Observers;
