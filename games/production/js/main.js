@@ -1,4 +1,31 @@
+/************************************/
+/** ------ EaselJS additions------ **/
+/************************************/
+createjs.Graphics.prototype.dashedLineTo = function(x1, y1, x2, y2, dashLen) {
+    this.moveTo(x1, y1);
+    
+    var dX = x2 - x1;
+    var dY = y2 - y1;
+    var dashes = Math.floor(Math.sqrt(dX * dX + dY * dY) / dashLen);
+    var dashX = dX / dashes;
+    var dashY = dY / dashes;
+    
+    var q = 0;
+    while (q++ < dashes) {
+        x1 += dashX;
+        y1 += dashY;
+        this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x1, y1);
+    }
+    this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x2, y2); 
+}
+
+/*****************************/
+/** ------ Main game ------ **/
+/*****************************/
 var SpaceRocks = (function() {
+	var _this;
+
+	// Global static vars
 	var MAX_WIDTH = ($("html").hasClass("touch") && ($("html").hasClass("ios") || $("html").hasClass("android")))? 2048 : 268;
 	var MAX_HEIGHT = ($("html").hasClass("touch") && ($("html").hasClass("ios") || $("html").hasClass("android")))? 2048 : 479;
 	var TARGET_FPS = 60;
@@ -8,27 +35,20 @@ var SpaceRocks = (function() {
 
 	var DEBUG = false;
 
+	// Constructor
 	function SpaceRocks() {
-		// Object variables
-		this.lastTickTime = null;
-		this.tickCount = 0;
-		this.shouldRestart = false;
-		this.paused = false;
+		_this = this;
+		_this.tickCount = 0;
+		_this.shouldRestart = false;
 
 		// Setup physics engine
-		this.physics = new Physics();
+		_this.physics = new Physics();
 
-		// FPS tracker
-		if(DEBUG) {
-			this.meter = new Stats();
-			this.meter.setMode(0);
-			this.meter.domElement.style.position = 'absolute';
-			this.meter.domElement.style.left = '0px';
-			this.meter.domElement.style.top = '0px';
-			document.body.appendChild(this.meter.domElement);
-		}
+		// Expose public functions
+		this.start = SpaceRocks.prototype.start;
+		this.getDimensions = SpaceRocks.prototype.getDimensions;
 
-		// Setup button
+		// Generic functions
 		$(".button").on("mousedown", function() {
 			$(this).addClass("selected");
 		})
@@ -40,28 +60,58 @@ var SpaceRocks = (function() {
 		})
 		$(".button").on("touchup", function() {
 			$(this).removeClass("selected");
-		});
+		})
+
+		// FPS tracker
+		if(DEBUG) {
+			_this.meter = new Stats();
+			_this.meter.setMode(0);
+			_this.meter.domElement.style.position = 'absolute';
+			_this.meter.domElement.style.left = '0px';
+			_this.meter.domElement.style.top = '0px';
+			document.body.appendChild( _this.meter.domElement);
+		}
 
 		// Set dimensions
-		this.resizeToScreen();
-		$(this.canvas).addClass("animated fadeIn");
+		_this.canvas = document.getElementById("game");
+		_this.width = (window.innerWidth <= MAX_WIDTH)? window.innerWidth * window.devicePixelRatio  : MAX_WIDTH * window.devicePixelRatio;
+		_this.height = (window.innerHeight <= MAX_HEIGHT)? window.innerHeight * window.devicePixelRatio  : MAX_HEIGHT * window.devicePixelRatio;
+		_this.canvas.width = _this.width;
+		_this.canvas.height = _this.height;
+		_this.canvas.style.width = (_this.width / window.devicePixelRatio) + "px";
+		_this.canvas.style.height = (_this.height / window.devicePixelRatio) + "px";
+		$(".game").css({
+			"width" : _this.canvas.style.width,
+			"height" : _this.canvas.style.height
+		});
+		$(_this.canvas).addClass("animated fadeIn");
 
 		// Double initial asteroid count for tablet devices
-		if((this.width / window.devicePixelRatio) * (this.height / window.devicePixelRatio) > 250000) { /* Over 500 * 500? Add more asteroids */
+		if(_this.canvas.width * _this.canvas.height > 2500) {
 			INITIAL_ASTEROID_COUNT *= 2;
 		}
 
 		// Create stage and enable touch
-		this.stage = new createjs.Stage("game");
-		createjs.Touch.enable(this.stage);
-		this.stage.enableMouseOver(60);
-		this.stage.snapToPixelEnabled = true;
-
-		// Setup target FPS
-		createjs.Ticker.setFPS(TARGET_FPS);
+		_this.stage = new createjs.Stage("game");
+		createjs.Touch.enable(_this.stage);
+		_this.stage.enableMouseOver(10);
+		_this.stage.snapToPixelEnabled = true;	
 
 		// Initialise game and attach click and touch observers
-		this.observers = new Observers(this, this.canvas);
+		if($(".touch-splash:visible").length === 0) {
+			_this.attachObservers();	
+			_this.init();
+		} else {
+			$(".touch-splash .play-now")[0].addEventListener("touchend", function() {
+				$(".touch-splash").addClass("fadeOut animated");
+				$(".touch-splash").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+					$(this).remove();
+				});
+
+				_this.attachObservers();	
+				_this.init();
+			})
+		}
 	}
 
 	SpaceRocks.prototype = {
@@ -71,19 +121,21 @@ var SpaceRocks = (function() {
 		/***********************************/
 		init : function() {
 			// Reset state
-			this.stage.removeAllChildren();
-			this.entities = new LinkedList();
-
-			// Add stars
-			this.addStars();
-			this.stage.update();	
+			_this.stage.removeAllChildren();
+			_this.entities = new LinkedList();
+			_this.mouseDown = null;
+			_this.mouseUp = null;
+			_this.mouseMove = null;	
 
 			// Show intro screen
-			this.showIntroScreen();
+			_this.showIntroScreen();
 		},
 		showIntroScreen : function() {
-			// Add intro animations
 			$(document.body).addClass("intro");
+			_this.addStars();
+			_this.stage.update();
+
+			// Add intro animations
 			$(".line.red").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
 				$("h1.light").addClass("fadeInUp animated").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
 					$("h1.extra-bold").addClass("bounceIn animated");
@@ -93,25 +145,22 @@ var SpaceRocks = (function() {
 		},
 		startGame : function() {
 			// Reset all dynamic aspects of the game
-			this.score = 0;
-			this.level = 1;
+			_this.score = 0;
 
 			// Setup entity array
-			this.paused = true; // Ensure level up is not accidently triggered during entity setup
-			this.setupEntities(function() {
-				$(".level").html(this.level);
-				this.triggerLevelUp();
+			_this.setupEntities(function() {
+				// Current level
+				_this.level = 1;
 
-				if(this.lastTickTime === null) {
-					this.lastTickTime = new Date().getTime();
-					createjs.Ticker.addEventListener("tick", this.tick.bind(this));
-				}
-			}.bind(this));
+				// Setup target FPS
+				createjs.Ticker.setFPS(TARGET_FPS);
+				createjs.Ticker.addEventListener("tick", _this.tick);
+			});
 		},
 		setupEntities : function(callback) {
 			// Create navigation
-			this.navigationContainer = new createjs.Container();
-			this.navigationContainer.visible = false;
+			_this.navigationContainer = new createjs.Container();
+			_this.navigationContainer.visible = false;
 
 			var navigationCircle = new createjs.Shape();
 			navigationCircle.name = "navigationCircle";
@@ -120,318 +169,371 @@ var SpaceRocks = (function() {
 
 			var navigationLine = new createjs.Shape();
 			navigationLine.name = "navigationLine";
-			this.navigationContainer.addChild(navigationCircle, navigationLine);
-			this.stage.addChildAt(this.navigationContainer, 1);
+			_this.navigationContainer.addChild(navigationCircle, navigationLine);
+			_this.stage.addChildAt(_this.navigationContainer, 1);
 
 			// Create player
-			this.player = new Player(this);
-			this.player.x = (this.width / 2) - (this.player.width / 2);
-			this.player.y = (this.height / 2) - (this.player.height / 2);
-			this.player.setupShape(function() {
+			_this.player = new Player(_this);
+			_this.player.x = (_this.width / 2) - (_this.player.width / 2);
+			_this.player.y = (_this.height / 2) - (_this.player.height / 2);
+			_this.player.setupShape(function() {
 				// Add player entity
-				this.addEntity(this.player, 2);
+				_this.addEntity(_this.player, 2);
 				// Create HUD
-				this.hud = new HUD(this, this.player);
-				this.hud.update();
+				_this.hud = new HUD(_this, _this.player);
 				// Add initial entities
-				this.addInitialAsteroids();
+				_this.addInitialAsteroids();
 				// Execute callback
 				callback();
-			}.bind(this));
-		},
-		/**************************************/
-		/** ------ Observer functions ------ **/
-		/**************************************/
-		resizeToScreen : function() {
-			this.canvas = document.getElementById("game");
-			this.canvas.screencanvas = true;
-			this.width = ($(window).width() <= MAX_WIDTH)? $(window).width() * window.devicePixelRatio  : MAX_WIDTH * window.devicePixelRatio;
-			this.height = ($(window).height() <= MAX_HEIGHT)? $(window).height() * window.devicePixelRatio  : MAX_HEIGHT * window.devicePixelRatio;
-			this.canvas.width = this.width;
-			this.canvas.height = this.height;
-			this.canvas.style.width = (this.width / window.devicePixelRatio) + "px";
-			this.canvas.style.height = (this.height / window.devicePixelRatio) + "px";
-			$(".game").css({
-				"width" : this.canvas.style.width,
-				"height" : this.canvas.style.height
 			});
 		},
+		attachObservers : function() {
+			// Intro button
+			$("#intro .button").click(function() {
+				// Disable touch events for intro screen
+				$("#intro").addClass("no-pointer-events");
+				$(".line.red").addClass("slideOutRight");
+				$("h1.light, h1.extra-bold, #intro .button").addClass("fadeOut").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+					$(".line.red").removeClass("slideOutRight");
+					$("h1.light, h1.extra-bold, #intro .button").removeClass("fadeOut");
+					$("#ui #in-game #hud").addClass("animated fadeInDown");
+					$("#intro").removeClass("no-pointer-events");
+					$(document.body).removeClass("intro").addClass("in-game");
+				});
 
+				_this.startGame();
+			});
+
+			// Game over button
+			$("#game-over .button").click(function() {
+				$(document.body).removeClass("game-over");
+				$("#game-over .overlay").removeClass("animated fadeInDown");
+				$("#game-over .overlay .social, #game-over .overlay .button").removeClass("animated fadeIn");
+				_this.shouldRestart = true;
+			});
+
+			// Post to Facebook button
+			$("#game-over .sc--facebook").click(function() {
+				_this.postToFacebook(_this.score);
+			});
+			// Post to Twitter button
+			$("#game-over .sc--twitter").click(function() {
+				_this.postToTwitter(_this.score);
+			})
+
+			// Prevent scrolling on page
+			document.addEventListener(
+			    "touchstart",
+			    function() { return false; },
+			    false
+			);
+
+			 _this.canvas.addEventListener("touchstart", function(e) {
+			 	_this.mouseDown = e;
+
+			 	// Ensure that x and y coords are mapped for render function
+			 	_this.mouseDown.x = e.changedTouches[0].clientX * window.devicePixelRatio;
+			 	_this.mouseDown.y = e.changedTouches[0].clientY * window.devicePixelRatio;
+			 });
+
+			 // Manually threshold pressmove event
+			_this.canvas.addEventListener("touchmove", function(e) {
+			 	_this.mouseMove = e;
+
+				// Ensure that x and y coords are mapped for render function
+			 	_this.mouseMove.x = e.changedTouches[0].clientX * window.devicePixelRatio;
+			 	_this.mouseMove.y = e.changedTouches[0].clientY * window.devicePixelRatio;
+			 });
+
+			_this.canvas.addEventListener("touchend", function(e) {	
+			 	_this.mouseUp = e;
+			 	if(_this.mouseUp.targetTouches.length === 0) {
+			 		_this.mouseDown = null;
+			 	}
+
+			 	// Ensure that x and y coords are mapped for render function
+			 	_this.mouseUp.x = e.changedTouches[0].clientX * window.devicePixelRatio;
+			 	_this.mouseUp.y = e.changedTouches[0].clientY * window.devicePixelRatio;
+			});
+
+			_this.canvas.addEventListener("mousedown", function(e) {
+				// Retina displays do not return correct relative coordinates
+			 	var overridenEvent = {
+			 		x : e.layerX * window.devicePixelRatio,
+			 		y : e.layerY * window.devicePixelRatio
+			 	}
+			 	_this.mouseDown = overridenEvent;
+			});
+
+			_this.canvas.addEventListener("mousemove", function(e) {
+				// Retina displays do not return correct relative coordinates
+			 	var overridenEvent = {
+			 		x : e.layerX * window.devicePixelRatio,
+			 		y : e.layerY * window.devicePixelRatio
+
+			 	}
+				_this.mouseMove = overridenEvent;
+			});
+
+			_this.canvas.addEventListener("mouseup", function(e) {
+				// Retina displays do not return correct relative coordinates
+			 	var overridenEvent = {
+			 		x : e.layerX * window.devicePixelRatio,
+			 		y : e.layerY * window.devicePixelRatio
+
+			 	}
+			 	_this.mouseUp = overridenEvent;
+			 	_this.mouseDown = null;
+			});
+		},
 		/****************************************/
 		/** ------ Navigation functions ------ **/
 		/****************************************/
 		updateNavigation : function() {
 			// If mouse is released and navigation is not shown
 			// or use has touched with a different finger
-			if(this.observers.mouseUp !== null && (!this.navigationContainer.visible || 
-				this.observers.mouseUp.targetTouches != null && this.observers.mouseUp.targetTouches.length > 0)) {
+			if(_this.mouseUp !== null && (!_this.navigationContainer.visible || 
+				_this.mouseUp.targetTouches != null && _this.mouseUp.targetTouches.length > 0)) {
 
-				this.player.fireMissile(this.observers.mouseUp.x, this.observers.mouseUp.y);
-				this.observers.mouseUp = null;
+				_this.player.fireMissile(_this.mouseUp.x, _this.mouseUp.y);
+				_this.mouseUp = null;
 			}
 
 			// If user is click dragging show navigation if movement is over thresholding
-			if(this.observers.mouseDown !== null && this.observers.mouseMove !== null) {
-				var distance = (Math.abs(this.observers.mouseDown.x - this.observers.mouseMove.x) 
-					+ Math.abs(this.observers.mouseDown.y - this.observers.mouseMove.y)) / 2;
+			if(_this.mouseDown !== null && _this.mouseMove !== null) {
+				var distance = (Math.abs(_this.mouseDown.x - _this.mouseMove.x) + Math.abs(_this.mouseDown.y - _this.mouseMove.y)) / 2;
 		 		if(distance > MOVEMENT_THRESHOLD) {
-		 			this.navigationContainer.visible = true;
-					this.lastTouchX = this.observers.mouseMove.x;
-					this.lastTouchY = this.observers.mouseMove.y;
-					this.player.setHeading(this.observers.mouseMove.x, this.observers.mouseMove.y);
+		 			_this.navigationContainer.visible = true;
+					_this.lastTouchX = _this.mouseMove.x;
+					_this.lastTouchY = _this.mouseMove.y;
+					_this.player.setHeading(_this.mouseMove.x, _this.mouseMove.y);
 		 		}
 			} else {
-				this.player.setHeading(null, null);
-				this.navigationContainer.visible = false;
-				this.observers.mouseUp = null;
-				this.observers.mouseMove = null;
+				_this.player.setHeading(null, null);
+				_this.navigationContainer.visible = false;
+				_this.mouseUp = null;
+				_this.mouseMove = null;
 			}
 		},
+
 		renderNavigation : function() {
 			// Circle where finger is
-			var navigationCircle = this.navigationContainer.getChildByName("navigationCircle");
-			var navigationLine = this.navigationContainer.getChildByName("navigationLine");
-			navigationCircle.x = this.lastTouchX;
-			navigationCircle.y = this.lastTouchY;
+			var navigationCircle = _this.navigationContainer.getChildByName("navigationCircle");
+			var navigationLine = _this.navigationContainer.getChildByName("navigationLine");
+			navigationCircle.x = _this.lastTouchX;
+			navigationCircle.y = _this.lastTouchY;
 
 			navigationLine.graphics.clear().setStrokeStyle(2 * window.devicePixelRatio).beginStroke("#15558b").dashedLineTo(this.player.x, this.player.y, this.lastTouchX, this.lastTouchY, 4);
 		},
-
-		/************************************/
-		/** ------ Public functions ------ **/
-		/************************************/
 		addEntity : function(entity, index) {
 			//if(entity.className() === "Particle") return;
 
 			// Adds object that conforms to entity interface
-			this.entities.push(entity);
-			if(index != null && this.stage.children.length > index) {
-				this.stage.addChildAt(entity.shape, index);
+			_this.entities.push(entity);
+			if(index != null && _this.stage.length > index) {
+				_this.stage.addChildAt(entity.shape, index);
 			} else {
-				this.stage.addChild(entity.shape);
+				_this.stage.addChild(entity.shape);
 			}
 		},
 		addShape : function(shape, index) {
-			// Ensure everything is a Bitmap for WebGL compatibility
+			// Ensure everuthing is a Bitmap for WebGL compatibility
 			if(shape.graphics != null) {
 				shape = new createjs.Bitmap(shape.cacheCanvas);
 			}			
-			if(index != null && this.stage.children.length > index) {
-				this.stage.addChildAt(shape, index);
+
+			if(index != null && _this.stage.length > index) {
+				_this.stage.addChildAt(shape, index);
 			} else {
-				this.stage.addChild(shape);
+				_this.stage.addChild(shape);
 			}
 		},
 		removeShape : function(shape) {
-			this.stage.removeChild(shape);
+			_this.stage.removeChild(shape);
 		},
 		getDimensions : function() {
-			return { width: this.width, height: this.height};
+			return { width: _this.width, height: _this.height};
 		},
+		// Needed for when alien is trying to fire at player
 		getPlayerLocaton : function() {
-			if(!this.player.isDead()) {
+			if(!_this.player.isDead()) {
 				return { 
-					x : this.player.x, 
-					y : this.player.y 
+					x : _this.player.x, 
+					y : _this.player.y 
 				};
 			} else {
 				// GHOSTS!!
 				return {
-					x : Math.random() * this.width,
-					y : Math.random() * this.height
+					x : Math.random() * _this.width,
+					y : Math.random() * _this.height
 				}
-			}
-		},
-		addScore : function(points, x, y) {
-			if(!this.player.isDead()) {
-				points *= this.level;
-				this.score += (points * this.level);
-				this.hud.triggerScoreAnimation(points, x, y);
 			}
 		},
 		/***************************************/
 		/** ------ Game tick functions ------ **/
 		/***************************************/
 		tick : function() {
-			// FPS meter
-			if(DEBUG) {this.meter.begin();}
-			++this.tickCount;
-
-			// Check for level up state
-			if(this.paused === true) {
-				// Keep ticking entity last update time so we don't get sudden jump after game is resumed
-				var node = this.entities.getHead();
-				while (node !== null) {
-					node.data.lastTickTime = new Date().getTime();
-					node = node.next;
-				}
-				return;
-			}
-
-			// Aliens can still be added during game over state!
-			if(this.aliensPresent < Math.floor(this.level / 2 + 1) || this.player.isDead()) {
-				this.addAlien();
-			}
-
 			// Restart requested
-			if(this.shouldRestart === true) {
-				this.shouldRestart = false;
-				this.init();
+			if(_this.shouldRestart) {
+				_this.shouldRestart = false;
+				_this.init();
 				return;
 			}
 
-			// Update and render navigation
-			this.updateNavigation();
-			this.renderNavigation();
+			// FPS meter
+			if(DEBUG) {_this.meter.begin();}
+			++_this.tickCount;
 
-			// Update HUD 
-			this.hud.update();
+			if(!_this.player.isDead()) {
+				// Update and render navigation
+				_this.updateNavigation();
+				_this.renderNavigation();
 
-			// Update and render entities
-			this.tickEntities();
-			this.stage.update();
-			// Update lastTickTime for entity FPS independent movement
-			this.lastTickTime = new Date().getTime();
+				// Update HUD 
+				_this.hud.update();
+			}
+
+			// Update and render
+			_this.tickEntities();
+			_this.stage.update();
 
 			// Check for game over
-			this.checkGameOver();
+			_this.checkGameOver();
 
-			// Check for end level conditions
-			if(!this.player.isDead()) {
-				this.checkRemainingAsteroids();
+			// Possibly add alien
+			if(_this.aliensPresent < Math.floor(_this.level / 2 + 1) || _this.player.isDead()) {
+				_this.addAlien();
 			}
 
-			if(DEBUG) {this.meter.end();}
+			// Check for end level / game conditions
+			if(!_this.player.isDead()) {
+				_this.checkRemainingAsteroids();
+			}
+
+			if(DEBUG) {_this.meter.end();}
 		},
 		tickEntities : function() {
 			// Reset entity present flags
-			this.aliensPresent = 0;
-			this.asteroidPresent = false;
+			_this.aliensPresent = 0;
+			_this.asteroidPresent = false;
 
 			// Update and render loop
-			var node = this.entities.getHead();
+			var node = _this.entities.getHead();
 			while (node !== null) {
 				var e1 = node.data;
 
 				// Make presence of certain entities
-				if(e1.className() === "Alien") { ++this.aliensPresent; }
-				if(e1.className() === "Asteroid") { this.asteroidPresent = true; }
+				if(e1.className() === "Alien") { ++_this.aliensPresent; }
+				if(e1.className() === "Asteroid") { _this.asteroidPresent = true; }
 
 				// Update and render entity
 				e1.update();
 				e1.render();
-				e1.lastTickTime = new Date().getTime();
 
 				// Try and collide with all other entities in list
 				var nestedNode = node.next;
 				while (nestedNode !== null) {
 					var e2 = nestedNode.data;
-					this.physics.collide(e1, e2);
+					_this.physics.collide(e1, e2);
 					nestedNode = nestedNode.next;
 				}
 				// Remove this entity if it's dead
 				if(e1.isDead()) {
-					this.stage.removeChild(e1.shape);
-					this.entities.remove(node);
+					_this.stage.removeChild(e1.shape);
+					_this.entities.remove(node);
 					nestedNode = node.next;
 				}
 				node = node.next;
 			}
 		},
-		triggerLevelUp : function() {
-			this.paused = true;
-			$("#level-up").addClass("active");
-			$("#level-up").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-				this.paused = false;
-				$("#level-up").removeClass("active");
-			}.bind(this));
-		},
-		checkRemainingAsteroids : function() {
-			// If no asteroids are left level up and add back asteroids
-			if(!this.asteroidPresent) {
-				++this.level;
-				$(".level").html(this.level);
-				this.triggerLevelUp();
-				this.addInitialAsteroids();
-			}
-		},
-		addInitialAsteroids : function() {
-			// Create asteroids
-			for(var i = 0; i < INITIAL_ASTEROID_COUNT; i++) {
-				this.addAsteroid();
-			}
-		},
-		addAsteroid : function() {
-			var asteroid = new Asteroid();
-			asteroid.x = Math.random() * this.width / 3;
-			if(Math.floor(Math.random() * 2) % 2 === 0) {
-				asteroid.x += (this.width / 3) * 2;
-			}
-			asteroid.y = Math.random() * this.height / 3;
-			if(Math.floor(Math.random() * 2) % 2 === 0) {
-				asteroid.y += (this.height / 3) * 2;
-			}
-			asteroid.setShape(new createjs.Shape());
-
-			// Add to entity list
-			this.addEntity(asteroid, 3);
-		},
-		addStars : function() {
-			if(this.starsShape == null) {
-				this.starsShape = new createjs.Shape();
-				this.starsShape.tickEnabled = false;
-			} else {
-				this.starsShape.graphics.clear();
-				this.stage.removeChildAt(0);
-			}
-			
-			var particleCount = 300;
-			for(var i = 0; i < particleCount; i++) {
-				var size = ((Math.random() * 2) + 1) * window.devicePixelRatio;
-				var x = Math.random() * this.width;
-				var y = Math.random() * this.height;
-
-				var color = "" + (Math.round(Math.random() * 255)).toString(16);
-				color = "#" + color + color + color;
-
-				this.starsShape.graphics.beginFill(color).drawRect(x, y, size, size);
-			}
-
-			this.starsShape.cache(0, 0, this.width, this.height);
-			this.addShape(this.starsShape, 0);
-		},
 		addAlien : function() {
 			// Alien has 50% chance of being added every 10 seconds
-			var alienInterval = 60 * 10 / this.level;
+			var alienInterval = 60 * 10 / _this.level;
 			var alienChance = 0.5;
 
-			if(this.tickCount % alienInterval === 0) {
+			if(_this.tickCount % alienInterval === 0) {
 				if(Math.random() > alienChance) {
 					// No alien - add one
 					var alien = new Alien();
 				
 					// Set random starting location along left side of screen
 					alien.x = 0;
-					alien.y = this.height * Math.random();
+					alien.y = _this.height * Math.random();
 
 					alien.setupShape(function(){
 						// Add to entity list only after shape has been setup
-						this.addEntity(alien);
-					}.bind(this));
+						_this.addEntity(alien);
+					});
 				}
 			}	
 
 		},
+		// If no asteroids are left level up and add back asteroids
+		checkRemainingAsteroids : function() {
+			// No asteroids found - level up and add back initial asteroids
+			if(!_this.asteroidPresent) {
+				++_this.level;
+				_this.addInitialAsteroids();
+			}
+		},
+		addInitialAsteroids : function() {
+			// Create asteroids
+			for(var i = 0; i < INITIAL_ASTEROID_COUNT; i++) {
+				_this.addAsteroid();
+			}
+		},
+		addAsteroid : function() {
+			var asteroid = new Asteroid();
+			// Set random starting corner
+			asteroid.x = Math.random() * _this.width / 3;
+			if(Math.floor(Math.random() * 2) % 2 === 0) {
+				asteroid.x += (_this.width / 3) * 2;
+			}
+			asteroid.y = Math.random() * _this.height / 3;
+			if(Math.floor(Math.random() * 2) % 2 === 0) {
+				asteroid.y += (_this.height / 3) * 2;
+			}
+			asteroid.setShape(new createjs.Shape());
+
+			// Add to entity list
+			_this.addEntity(asteroid, 3);
+		},
+		// Called by other functions when score should increase
+		addScore : function(points, x, y) {
+			if(!_this.player.isDead()) {
+				points *= _this.level;
+				this.score += (points * _this.level);
+				_this.hud.triggerScoreAnimation(points, x, y);
+			}
+		},
+		addStars : function() {
+			var particleCount = 200;
+			var starsShape = new createjs.Shape();
+
+			for(var i = 0; i < particleCount; i++) {
+				var size = ((Math.random() * 2) + 1) * window.devicePixelRatio;
+				var x = Math.random() * _this.width;
+				var y = Math.random() * _this.height;
+
+				var color = "" + (Math.round(Math.random() * 255)).toString(16);
+				color = "#" + color + color + color;
+
+				starsShape.graphics.beginFill(color).drawRect(x, y, size, size);
+			}
+			starsShape.cache(0, 0, _this.width, _this.height);
+
+			_this.addShape(starsShape, 0);
+		},
 		checkGameOver : function() {
-			if($(document.body).hasClass("in-game") && this.player.isDead() 
+			if($(document.body).hasClass("in-game") && _this.player.isDead() 
 				&& !$(document.body).hasClass("game-over")) {
 				
 				$(document.body).removeClass("in-game");
 				$(document.body).addClass("game-over");
 				$("#game-over .overlay").addClass("animated slideInDown");
 
-				if(this.score !== 0) {
-					this.animateScoreBoard();
+				if(_this.score !== 0) {
+					_this.animateScoreBoard();
 				} else {
 					$("#game-over .overlay .social, #game-over .overlay .button").addClass("animated fadeIn");
 				}
@@ -439,9 +541,9 @@ var SpaceRocks = (function() {
 		},
 		animateScoreBoard : function() {
 			var animateFunction = function() {
-				if(animatedScore > this.score) {
+				if(animatedScore > _this.score) {
 					clearInterval(animateScoreInterval);
-					$("#game-over .overlay .score").html(this.score);
+					$("#game-over .overlay .score").html(_this.score);
 					$("#game-over .overlay .social, #game-over .overlay .button").addClass("animated fadeIn");
 				} else {
 					animatedScore += pointsPerUpdate;
@@ -451,10 +553,33 @@ var SpaceRocks = (function() {
 			var animatedScore = 0;
 			var maxAnimationTime = 1500;
 			var updateInterval = 1000 / 60;
-			var pointsPerUpdate = this.score / (maxAnimationTime / updateInterval);
+			var pointsPerUpdate = _this.score / (maxAnimationTime / updateInterval);
 
-			var animateScoreInterval = setInterval(animateFunction.bind(this), updateInterval);
+			var animateScoreInterval = setInterval(animateFunction, updateInterval);
 			var scoreAnimationStartTime = new Date().getTime();
+		},
+		postToFacebook : function(score) {
+			FB.ui(
+		      {
+		       method: 'feed',
+		       name: 'Space Rocks',
+		       caption: 'A modern take on an arcade classic',
+		       description: (
+		          'Space Rocks is pretty cool ya\'ll. I just scored ' + score +
+		          '. Try beat it!'
+		       ),
+		       href : window.location.href,
+		       link: window.location.href,
+		       picture: 'https://raw.githubusercontent.com/jrgrafton/asteroids/gh-pages/production/img/app-icon.png',
+			   actions: [ { name: 'via Space Rocks', link : window.location.href}]
+		      },
+		      function(response) {}
+		    );
+		},
+		postToTwitter : function(score) {
+			var msg = 'Space Rocks is pretty cool ya\'ll. I just scored ' + score +
+				'. Try beat it! ' + window.location.href;
+			window.open("https://twitter.com/intent/tweet?source=webclient&text=" + msg, "_blank");
 		}
 	}
 
@@ -462,6 +587,5 @@ var SpaceRocks = (function() {
 })();
 
 window.onload = function() {
-	FastClick.attach(document.body);
 	window.spaceRocks = new SpaceRocks(); 
 }
