@@ -2,6 +2,11 @@
 /**** Global styles ****/
 /***********************/
 @import url("fonts.css");
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none; /* Disable selection/copy in UIWebView */
+    -webkit-tap-highlight-color: transparent; /* Disable grey highlight */
+}
 html {
 	-webkit-font-smoothing:antialiased;
 }
@@ -13,7 +18,8 @@ html, body {
 	-ms-user-select: none;
 	user-select: none;
 	color: white;
-	font-size: 13px;
+	font-size: 13px;	margin: 0px;
+
 	font-family: "Exo 2";
 	font-style: normal;
 	overflow: hidden;
@@ -24,7 +30,6 @@ html, body {
 	height: 100%;
 }
 canvas {
-	background: black;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box; /* Firefox 28 and earlier*/
 	opacity: 0;
@@ -32,11 +37,25 @@ canvas {
 
 h1 {
 	font-size: 6.15em;
-	margin: 0px;
 }
 h2 {
 	font-size: 4.059em;
-	margin: 0.5em;
+	margin-top: 0.33em;
+	margin-bottom: 0.33em;
+}
+
+h3 {
+	font-size: 2.27894em;
+	margin-top: 0.66em;
+	margin-bottom: 0.66em;
+}
+
+a {
+	color: #cc423b;
+	text-decoration: underline;
+	font-size: 1.66em;
+	font-weight: 600;
+	padding:15px; /* So touch targets are easier to get to */
 }
 
 .win h1  {
@@ -92,6 +111,9 @@ h2 {
 	position: relative;
 }
 
+body.in-game canvas, body.intro canvas, body.game-over canvas {
+	background: black;
+}
 /***************************/
 /**** UI styles - intro ****/
 /***************************/
@@ -105,9 +127,27 @@ body.intro #intro {
 	left: 0px;
 	text-align: center;
 	width: 100%;
-	margin-top: 20%;
+	height: 100%;
 	display: none;
 	z-index: 1;
+}
+
+#intro .title-wrapper, #intro .start-wrapper {
+	display: table;
+	width:100%;
+}
+
+#intro .title-wrapper {
+	height: 60%;
+}
+
+#intro .start-wrapper {
+	height: 40%;
+}
+
+#intro .title, #intro .start {
+	display: table-cell;
+	vertical-align: middle;
 }
 
 #intro .red.line {
@@ -118,6 +158,10 @@ body.intro #intro {
 	margin-top: 0.5em;
 	position: relative;
 }
+
+#intro h1 {
+	margin: 0;
+}
 #intro h1.light {
 	opacity: 0;
 }
@@ -127,9 +171,46 @@ body.intro #intro {
 }
 #intro .button {
 	margin: 0 auto;
-	margin-top: 30%;
 	opacity: 0;
 }
+
+/******************************/
+/**** UI styles - level up ****/
+/******************************/
+body.in-game #level-up {
+	display: block;
+}
+
+#level-up {
+	width: 100%;
+	height: 20%;
+	border-top:5px solid #cc423b;
+	border-bottom:5px solid #cc423b;
+	background: rgba(0, 0, 0, 0.7);
+	text-align: center;
+	position: absolute;
+	z-index: 2;
+	top: 100%;
+	box-sizing: border-box;
+	opacity: 0;
+	pointer-events:none;
+}
+
+#level-up.active {
+	-webkit-animation:level-up 2s; /* Safari and Chrome */
+}
+
+#level-up h2 {
+	margin: 0px;
+}
+
+@-webkit-keyframes level-up {
+	0% {opacity:0; top:100%}
+	20% {opacity:1.0; top:40%}
+	80% {opacity:1.0; top:40%}
+	100% {opacity:0; top:-20%}
+}
+
 /*****************************/
 /**** UI styles - in game ****/
 /*****************************/
@@ -236,7 +317,7 @@ body.in-game #ui #in-game {
 /**** UI styles - game over ****/
 /*******************************/
 body.game-over #game-over {
-	display: block;
+	display: table;
 }
 
 #game-over {
@@ -259,13 +340,14 @@ body.game-over #game-over {
 	opacity: 0.6;
 }
 
+#game-over .overlay-wrapper {
+	display: table-cell;
+	vertical-align: middle;
+}
 #game-over .overlay {
 	width: 250px;
-	height: 325px;
 	margin: 0 auto;
 	text-align: center;
-	padding-top: 50%;
-	margin-top: -70px;
 }
 
 #game-over .overlay .panel-header {
@@ -370,6 +452,73 @@ larger than a mobile screen show marketing site */
 .column-11 	{ width: 97.65625px; }
 .column-12 	{ width: 100%; margin-right: 0; }
 
+/***********************************/
+/**** Environmental components ****/
+/**********************************/
+
+/* Splash */
+.splash {
+	width: 90%;
+	height: 100%;
+	display: none;
+	position: absolute;
+	z-index: 3;
+	background: white;
+	color: #444;
+	opacity: 0;
+	padding-left: 5%;
+	padding-right: 5%;
+}
+
+.splash .container { 
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.splash .logo {
+	color: black;
+	font-size: 6.19384615384615384615em;
+	line-height: 1em;
+}
+
+.splash .container .tagline {
+	font-size: 2.06461538461538461538em;
+}
+
+.splash .container .red.line {
+	width: 90%;
+	height: 5px;
+	background-color: #cc423b;
+	margin: auto;
+	margin-top: 1em;
+}
+
+@media only screen 
+and (min-device-width : 1024px) {
+	/* Unsupported desktop browser */
+	.unsupported-browser .game-container {
+		display: none;
+	}
+	.unsupported-browser .unsupported-browser-splash {
+		display: table;
+	}
+
+	.unsupported-browser .unsupported-browser-splash .download {
+		display: inline-block;
+		overflow: auto;
+		zoom: 1;
+	}
+
+	.unsupported-browser .unsupported-browser-splash .download a {
+		float: left;
+	}
+
+	.unsupported-browser .unsupported-browser-splash .download a span {
+		display: block;
+	}
+}
+
 @media only screen 
 and (min-device-width : 1024px) {
 	/* Show marketing site */
@@ -393,6 +542,7 @@ and (min-device-width : 1024px) {
 		position: absolute;
 		z-index: 2;
 		pointer-events:none;
+		left:0;
 	}
 
 	.game {
@@ -438,15 +588,14 @@ and (max-width : 959px) {
 		width: 100%;
 		padding: 1em;
 		margin: 0px;
-		text-align: center
 	}
 }
 
 /* Touch devices below 1280px - show full screen game */
 @media only screen 
 and (max-device-width : 1280px) {
-	html.touch {
-		background: white;
+	html.touch, html.touch body {
+		background: black;
 	}
 
 	.touch .container {
@@ -471,54 +620,34 @@ and (max-device-width : 1280px) {
 		display: none;
 	}
 
-	/* Splash screen */
-	.touch .touch-splash {
-		width: 100%;
-		height: 100%;
-		display: block;
-		position: absolute;
-		z-index: 3;
-		background: white;
+	/* Splash screen for mobile web */
+	.touch.non-native .touch-splash {
 		display: table;
-		color: #444;
-	}
-	.touch .touch-splash .container { 
-		display: table-cell;
-		vertical-align: middle;
-		text-align: center;
-	}
-	.touch .touch-splash .container .logo {
-		color: black;
-		font-size: 6.19384615384615384615em;
 	}
 
-	.touch .touch-splash .container .tagline {
-		font-size: 2.06461538461538461538em;
-	}
-	.touch .touch-splash .container .red.line {
-		width: 90%;
-		height: 5px;
-		background-color: #cc423b;
-		margin: auto;
-		margin-top: 1em;
+	.touch.non-native.ios .download img {
+		margin-bottom: 2.0em;
 	}
 
-	.touch.ios .download .android {
+	.touch.non-native.ios .download .android {
 		display: none;
 	}
 
-	.touch.android .download .ios {
+	.touch.non-native.android .download .ios {
 		display: none;
 	}
-
-	.touch .play-now {
-		color: #cc423b;
-		text-decoration: underline;
-		font-size: 1.66em;
-		font-weight: 600;
+}
+@media only screen 
+and (max-device-width : 592px) {
+	/* Decrease splash screens font size on  mobile */
+	html.touch .splash {
+		font-size: 10px
 	}
-	
-	.touch .play-now:hover {
-		cursor: pointer;
+}
+
+@media only screen 
+and (max-device-width : 592px) and (orientation:landscape) {
+	html.touch #game-over .overlay {
+		zoom:0.85;
 	}
 }
