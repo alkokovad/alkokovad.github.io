@@ -56,51 +56,8 @@
 	<script src="js/main.js"></script>
 </head>
 <body ontouchmove="event.preventDefault()" class="animated fadeIn">
-    <div class="touch-splash splash">
-        <div class="container">
-            <div class="logo">
-                <span>Space</span>
-                <span class="extra-bold ">Cocks</span>
-            </div>
-            <div class="tagline light">A modern take on an arcade classic</div>
-            <div class="red line"></div>
-            <h3 class="normal">Download the app below</h3>
-            <div class="download">
-                <img class="ios" width="150px" src="img/store-ios.png">
-                <img class="android" width="150px" src="img/store-android.png">
-            </div>
-            <a href="#" class="play-now">
-                Or play online now
-            </a>
-        </div>
-    </div>
-    <div class="unsupported-browser-splash splash">
-        <div class="container">
-            <div class="logo">
-                <span>Space</span>
-                <span class="extra-bold ">Cocks</span>
-            </div>
-            <div class="tagline light">A modern take on an arcade classic</div>
-            <div class="red line"></div>
-            <h2 class="bold">Uhoh!</h2>
-            <h3 class="normal">Looks like we don't support your browser</h3>
-            <div class="download">
-                <a href="https://www.google.co.uk/intl/en_uk/chrome/browser/">
-                    <img class="chrome" width="150px" src="img/logo-chrome.png">
-                    <span>Download Chrome</span>
-                </a>
-
-                <a href="http://www.mozilla.org/en-GB/firefox/new/">
-                    <img class="firefox" width="150px" src="img/logo-firefox.png">
-                    <span>Download Firefox</span>
-                </a>
-                <br />
-            </div>
-        </div>
-    </div>
     <div class="game-container container">
         <div class="column-5 column">
-            <img class="game-shim" src="img/iphone-shim.png" width="320px;">
             <div class="game">
             	<div id="ui">
                 	<div id="in-game">
@@ -190,54 +147,6 @@
                 <canvas id="game" screencanvas="true"></canvas>
             </div>
         </div>
-        <div class="column-7 column">
-            <div class="marketing">
-                <div class="logo">
-                    <img src="img/icon.png">
-                    <span>Space</span>
-                    <span class="extra-bold ">Rocks</span>
-                </div>
-                <h1>A modern take on an arcade classic</h1>
-                <p class="instructions">Click and drag to move. Click to shoot</p>
-
-                <div class="download">
-                    <p class="instructions extra-bold">Visit on mobile to play full screen</p>
-                    <!-- <img class="ios" width="150px" src="img/store-ios.png">
-                    <img class="android" width="150px" src="img/store-android.png">-->
-                </div>
-            </div>
-        </div>
     </div>
-
-    <!-- GA -->
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-46740382-4', 'auto');
-      ga('send', 'pageview');
-
-    </script>
-
-    <!-- Facebook API -->
-    <script>
-    window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '280195275494448',
-          xfbml      : true,
-          version    : 'v2.0'
-        });
-      };
-
-      (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
-    </script>
 </body>
 </html>
