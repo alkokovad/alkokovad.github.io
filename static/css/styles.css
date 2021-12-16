@@ -1,0 +1,51 @@
+.centered {
+  text-align: center;
+}
+
+header{
+  position: fixed;
+  top: 0px;
+  height: 103px;
+}
+
+.theme{
+  background-color: #111;
+  margin-top: 103px;
+  margin-bottom: 500px;
+}
+
+.main_text{
+  color: #f60;
+}
+
+
+.nav_menu {
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.dot {
+  background-color: #f60;
+  padding-right: 12px;
+  padding-bottom: 12px;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.name_theme {
+  color: #eee;
+}
+
+.lines {
+  position: relative;
+  background-color: #f60;
+  width: 200px;
+  height: 10px;
+  border-radius: 5px;
+  padding-right: 200px;
+  display: inline-block;
+  transform: rotate(150deg);
+}
+  
