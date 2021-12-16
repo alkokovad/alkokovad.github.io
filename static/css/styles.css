@@ -44,7 +44,6 @@ header{
   width: 200px;
   height: 10px;
   border-radius: 5px;
-  padding-right: 200px;
   display: inline-block;
   transform: rotate(150deg);
 }
