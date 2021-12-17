@@ -1,5 +1,10 @@
 html {
   max-width: 100vw;
+  max-height: 10 vh;
+}
+
+body {
+  overflow: hidden;
 }
 
 header{
@@ -11,7 +16,6 @@ header{
 .theme{
   background-color: #111;
   margin-top: 15vh;
-  margin-bottom: 500px;
 }
 
 .main_text{
