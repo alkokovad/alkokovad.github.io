@@ -49,10 +49,10 @@ header{
   position: absolute;
   background-color: #f60;
   width: 50vw;
-  height: height: calc((100vw + 100vh) / 15);
+  height: calc((100vw + 100vh) / 15);
   left: 65vw;
   float: right;
-  border-radius: calc((100vw + 100vh) / 30);
+  border-radius: calc((100vw + 100vh) / 15 / 2);
   display: inline-block;
   transform: rotate(150deg);
 }
