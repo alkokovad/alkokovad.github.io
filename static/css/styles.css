@@ -1,23 +1,24 @@
-.centered {
-  text-align: center;
+html {
+  max-width: 100vw;
 }
 
 header{
   position: fixed;
   top: 0px;
-  height: 103px;
+  height: 15vh;
 }
 
 .theme{
   background-color: #111;
-  margin-top: 103px;
+  margin-top: 15vh;
   margin-bottom: 500px;
 }
 
 .main_text{
-  width: 30vw;
-  height: 10vh
   color: #f60;
+  width: 60vw;
+  height: 20vh;
+  font-size: 6vw;
 }
 
 
@@ -43,12 +44,11 @@ header{
 .lines {
   position: absolute;
   background-color: #f60;
-  width: 400px;
-  height: 50px;
-  left: 60%;
+  width: 50vw;
+  height: 20vh;
+  left: 65vw;
   float: right;
-  border-radius: 25px;
+  border-radius: 10vh;
   display: inline-block;
   transform: rotate(150deg);
 }
-  
