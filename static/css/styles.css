@@ -31,6 +31,11 @@ header{
   padding-top: 10px;
 }
 
+.nav__menu {
+  position: absolute;
+  left: 110vw;
+}
+
 .dot {
   background-color: #f60;
   padding-right: 12px;
@@ -55,4 +60,12 @@ header{
   border-radius: calc((100vw + 100vh) / 15 / 2);
   display: inline-block;
   transform: rotate(150deg);
+}
+
+.nav__link {
+  color: #f60;
+}
+
+.show {
+  left: 0%;
 }
