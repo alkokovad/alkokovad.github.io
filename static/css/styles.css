@@ -66,6 +66,14 @@ header{
   color: #f60;
 }
 
-.show {
+.home_show {
+  left: 0%;
+}
+
+.projects_show {
+  left: 0%;
+}
+
+.contact_show {
   left: 0%;
 }
