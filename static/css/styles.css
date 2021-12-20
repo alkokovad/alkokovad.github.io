@@ -67,13 +67,19 @@ header{
 }
 
 .home_show {
-  left: 0%;
+  position: absolute;
+  left: calc(53px + 1.5vw);
+  top: 10px;
 }
 
 .projects_show {
-  left: 0%;
+  position: absolute;
+  left: calc(53px + 1vw);
+  top: calc(53px + 1vh);
 }
 
 .contact_show {
-  left: 0%;
+  position: absolute;
+  left: 10px;
+  top: calc(53px + 1vh);
 }
