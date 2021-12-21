@@ -64,18 +64,18 @@ header{
 .home_show {
   position: absolute;
   left: 30px;
-  top: calc((100vw + 100vh) / 60);
+  top: calc((100vw + 100vh) / 30);
 }
 
 .projects_show {
   position: absolute;
-  left: calc((100vw + 100vh) / 80);
-  top: calc((100vw + 100vh) / 80);
+  left: calc((100vw + 100vh) / 40);
+  top: calc((100vw + 100vh) / 40);
 }
 
 .contact_show {
   position: absolute;
-  left: calc((100vw + 100vh) / 60);
+  left: calc((100vw + 100vh) / 30);
   top: 30px;
 }
 
