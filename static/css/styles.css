@@ -64,17 +64,22 @@ header{
 .home_show {
   position: absolute;
   left: 30px;
-  top: calc(53px + 1.2vw);
+  top: calc((100vw + 100vh) / 60);
 }
 
 .projects_show {
   position: absolute;
-  left: calc(53px + 0.8vw);
-  top: calc(53px + 0.8vh);
+  left: calc((100vw + 100vh) / 80);
+  top: calc((100vw + 100vh) / 80);
 }
 
 .contact_show {
   position: absolute;
-  left: calc(53px + 1.2vw);
+  left: calc((100vw + 100vh) / 60);
   top: 30px;
+}
+
+.hidden {
+  position: absolute;
+  right: 110vw;
 }
