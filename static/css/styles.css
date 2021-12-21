@@ -78,8 +78,3 @@ header{
   left: calc(53px + 1.2vw);
   top: 30px;
 }
-
-.hidden {
-  position: absolute;
-  right: 110vw;
-}
