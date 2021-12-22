@@ -64,22 +64,26 @@ header{
 .home_show {
   position: absolute;
   left: 30px;
-  top: calc((100vw + 100vh) / 30);
+  top: 63px;
 }
 
 .projects_show {
   position: absolute;
-  left: calc((100vw + 100vh) / 40);
-  top: calc((100vw + 100vh) / 40);
+  left: 53px;
+  top: 53px;
 }
 
 .contact_show {
   position: absolute;
-  left: calc((100vw + 100vh) / 30);
+  left: 63px;
   top: 30px;
 }
 
 .hidden {
   position: absolute;
   right: 110vw;
+}
+
+.active {
+  color: white;
 }
