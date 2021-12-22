@@ -1,12 +1,14 @@
 let home = document.getElementById('home')
 let projects = document.getElementById('projects')
 let contact = document.getElementById('contact')
+const navLink = document.querySelectorAll('.nav__link');
 
 
 const showMenu = (toggleId) =>{
   const toggle = document.getElementById(toggleId);
   if(toggle){
     toggle.addEventListener('click', ()=>{
+       navLink.forEach(n => n.classList.remove('active'));
        home.classList.toggle('hidden');
        home.classList.toggle('home_show');
        projects.classList.toggle('hidden');
@@ -18,14 +20,13 @@ const showMenu = (toggleId) =>{
 }
 showMenu('nav-toggle')
 
-const navLink = document.querySelectorAll('.nav__link');
 
 function linkAction(){
   navLink.forEach(n => n.classList.remove('active'));
   this.classList.add('active');
 
-  home.classList.toggle('hidden');
-  categories.classList.toggle('hidden');
-  contact.classList.toggle('hidden');
+  home.classList.add('hidden');
+  categories.classList.add('hidden');
+  contact.classList.add('hidden');
 }
 navLink.forEach(n => n.addEventListener('click', linkAction));
