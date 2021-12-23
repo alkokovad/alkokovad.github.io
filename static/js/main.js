@@ -24,9 +24,6 @@ showMenu('nav-toggle')
 function linkAction(){
   navLink.forEach(n => n.classList.remove('active'));
   this.classList.add('active');
-
-  home.classList.add('hidden');
-  categories.classList.add('hidden');
-  contact.classList.add('hidden');
+  showMenu('nav-toggle')
 }
 navLink.forEach(n => n.addEventListener('click', linkAction));
