@@ -20,10 +20,19 @@ const showMenu = (toggleId) =>{
 }
 showMenu('nav-toggle')
 
+function hideMenu(){
+       navLink.forEach(n => n.classList.remove('active'));
+       home.classList.toggle('hidden');
+       home.classList.toggle('home_show');
+       projects.classList.toggle('hidden');
+       projects.classList.toggle('projects_show');
+       contact.classList.toggle('hidden');
+       contact.classList.toggle('contact_show');
+}
 
 function linkAction(){
   navLink.forEach(n => n.classList.remove('active'));
   this.classList.add('active');
-  showMenu('nav-toggle')
+  hideMenu()
 }
 navLink.forEach(n => n.addEventListener('click', linkAction));
