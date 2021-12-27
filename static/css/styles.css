@@ -1,4 +1,6 @@
 html {
+  position: absolute:
+  clip: rect(auto, auto, auto, auto);
   max-width: 100vw;
   max-height: 10 vh;
 }
