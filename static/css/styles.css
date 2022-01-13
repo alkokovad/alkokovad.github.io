@@ -98,9 +98,16 @@ header{
 
 .block-decoration1 {
   position: absolute;
-  background-color: #fff;
+  background-color: #333;
   left: 10vw;
-  height: 1vh;
+  height: 2vh;
   display: inline-block;
   transform: rotate(15deg);
+}
+
+.project_window {
+  position: absolute;
+  background-color: #333;
+  display: inline-block;
+  overflow: hidden;
 }
