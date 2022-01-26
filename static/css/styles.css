@@ -88,12 +88,11 @@ header{
 
 .blocks {
   position: absolute;
-  left: 10vw;
   background-color: #f60;
   width: 80vw;
-  height: 10vh;
+  height: 5vh;
   display: inline-block;
-  border-radius: 2vh;
+  border-radius: 1.5vh;
 }
 
 .block-decoration1 {
