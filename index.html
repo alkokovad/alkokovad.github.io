@@ -11,55 +11,54 @@
   </head>
   <body class="theme">
     <section>
-      <header>
+      <header style="z-index: 7">
         <nav>
           <div class="nav_menu">
             <span class="dot" id="nav-toggle">
               <img src="static/img/sandwich.png" style="height: 140%; width: 140%">
             </span>
-              <a href="#home" class="nav__link nav-icon"><i class="bx bx-message bx-sm hidden" id="home"></i></a>
-              <a href="#work" class="nav__link nav-icon"><i class="bx bx-category bx-sm hidden" id="projects"></i></a>
-              <a href="#contact" class="nav__link nav-icon"><i class="bx bx-home bx-sm hidden" id="contact"></i></a>
+            <a href="#home" class="nav__link nav-icon"><i class="bx bx-home bx-sm hidden" id="home_nav"></i></a>
+            <a href="#work" class="nav__link nav-icon"><i class="bx bx-category bx-sm hidden" id="projects_nav"></i></a>
+            <a href="#contact" class="nav__link nav-icon"><i class="bx bx-message bx-sm hidden" id="contact_nav"></i></a>
           </div>
         </nav>
       </header>
     </section>
     <span class="lines" style="top: calc(-100vh / 20 - 100vw / 30)"></span>
     <span class="lines"></span>
-    <section>
+    <section style="height: 24vh" id="home">
       <h1 class="main_text" style="padding-left: 40px">
-        Привет, я <span class="name_theme">Саня,<br></span><span class="typed-text">Back-End Develo</span>
+        Hi, I'm <span class="name_theme">Alexander,<br></span><span class="typed-text">Back-End Developer.</span>
       </h1>
     </section>
     <section>
-      <div>
-        <img src="static/img/background_pic.png" style="width: 75vw; padding-left: 5vw; padding-top: 12vw">
-        <span style="padding-left: 5vw">
-          <img src="static/img/me.jpg" style="width: 15vw; height: 15vw; border-radius: 50%">
+      <img src="static/img/background_pic.png" style="width: 100%">
+      <span style="position: absolute; left: 60%; padding-top: 40%">
+        <img src="static/img/me.jpg" style="width: 15vw; height: 15vw; border-radius: 50%">
+      </span>
+    </section>
+    <section style="height: calc(60vw + 5vh); padding-top: 5vh">
+      <span style="position: absolute; left: 21vw; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); height: 60vw; width: 60vw; border-width: 1vw; border-radius: 3vw; border-style: outset; border-color: #f60; border-display: inline-block">
+        <h3 style="width: 58vw; font-size: calc(13vw / 5); text-align: center; color: #f60">About me</h3>
+        <h6 style="padding-top: 6vw; padding-left: 1vw; width: 58vw; height: 58vw; font-size: calc(50vw / 20); color: #fff">Well, hello where, my name is Alexandr Kopeykin, I'am 17 years old and I live in Russia, Saint-Petersburg. I'm writing programs already 2 and half yaears now. My first language was Python, but now I'm learning JavaScript and in the future will learn Java. At first in the future I want to become a Full-Stack Developer, and then DevOPs Engeneer. This site is about my Programming guru way, there I'll stock my projects, and write my skills dairy.</h6>
+      </span>
+    </section>
+    <section style="padding-top: 9vh">
+      <h2 style="color: #f60; font-size: calc(13vw / 5); text-align: center">Skills</h2>
+      <div style="text-align: center">
+        <span class="blocks">
+          <i style="position: absolute; font-size: 5vw; left: 5vw" class="bx bx-code-alt skills__icon"></i>
+        </span>
+        <span class="blocks">
+          <i style="position: absolute; font-size: 5vw; left: 35vw" class="bx bxl-python bx-md skills__icon"></i>
+        </span>
+        <span class="blocks">
+          <i style="position: absolute; font-size: 5vw; left: 70vw" class="fas fa-palette  skills__icon"></i>
         </span>
       </div>
     </section>
-    <section>
-      <span style="position: relative; right: 10vw; left: 10vw; top: 35vh; padding-left: 40vw; padding-top: 30vh; padding-right: 40vw;
-            border-style: outset; border-color: #f60; border-radius: 2vh; border-display: inline-block"></span>
-    <div>
-      <h3 style="padding-left: 40vw; padding-right: 40vw; font-size: 4vw; padding-top: 5vh; color: #fff">Обо мне</h3>
-      <h6 style="padding-left: 12vw; padding-right: 12vw; padding-top: 1vh; font-size: calc(100vh / 100vw * 4); color: #fff">
-        Короче, я Саня, коротко: типа программист, прогаю на питоне, кайфую, все дела, короче всё круто, этот текст
-        пример для заполнения, короче вот я пишу, продолжаю писать, вообщем-то уже заебался писать, но да похуй,
-          продолжим.</h6>
-    </div>
-    </section>
-    <section style="position: relative; padding-top: 10vh; text-align: center">
-      <h2 style="color: #f60; font-size: calc(100vh / 100vw * 4); padding-top: 5vh">Навыки</h2>
-
-      <span class="blocks" style="position: relative; top: 1vh"></span>
-      <span class="blocks" style="position: relative; top: 2vh"></span>
-      <span class="blocks" style="position: relative; top: 3vh"></span>
-
-    </section>
-    <h1 style="font-size: calc(100vh / 100vw * 4); padding-top: 7vh; text-align: center">Проекты</h1>
-    <section style="position: relative; padding-top: 5vh">
+    <section id="work">
+      <h1 style="font-size: calc(100vh / 100vw * 4); padding-top: 7vh; text-align: center">Projects</h1>
 
       <span style="position: relative; background-color: #333; display: inline-block; width: 35vw; height: 20vw; border-radius: 2vw; left: 33vw; top: 2.5vw"></span>
       <span class="project_window" style="width: 25vw; height: 25vw; border-radius: 12.5vw; left: 60vw">
@@ -71,5 +70,5 @@
     <script src="static/js/main.js"></script>
 
 
-</body>
+  </body>
 </html>

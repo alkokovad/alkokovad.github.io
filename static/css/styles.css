@@ -19,8 +19,8 @@ header{
 .main_text{
   color: #f60;
   width: 60vw;
-  height: 20vh;
-  font-size: 6vw;
+  height: 24vh;
+  font-size: 5vh;
 }
 
 
@@ -61,8 +61,8 @@ header{
 
 .home_show {
   position: absolute;
-  left: 30px;
-  top: 63px;
+  left: 63px;
+  top: 30px;
 }
 
 .projects_show {
@@ -73,8 +73,8 @@ header{
 
 .contact_show {
   position: absolute;
-  left: 63px;
-  top: 30px;
+  left: 30px;
+  top: 63px;
 }
 
 .hidden {
@@ -87,12 +87,11 @@ header{
 }
 
 .blocks {
-  position: absolute;
   background-color: #f60;
-  width: 80vw;
-  height: 5vh;
+  width: 30vw;
+  height: 5vw;
   display: inline-block;
-  border-radius: 1.5vh;
+  border-radius: 2.5vw;
 }
 
 .block-decoration1 {

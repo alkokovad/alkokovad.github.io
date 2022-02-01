@@ -1,6 +1,6 @@
-let home = document.getElementById('home')
-let projects = document.getElementById('projects')
-let contact = document.getElementById('contact')
+let home = document.getElementById('home_nav')
+let projects = document.getElementById('projects_nav')
+let contact = document.getElementById('contact_nav')
 const navLink = document.querySelectorAll('.nav__link');
 
 
