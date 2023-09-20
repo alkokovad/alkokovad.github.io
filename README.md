@@ -5,7 +5,7 @@ ___
 ## Short facts
 * ###### My name is Alexandr
 * ###### I'am from Russia, Saint-Petersburg
-* ###### my programming experience is aboaut 2 years, and I'am 17 years old
+* ###### my programming experience is about 4 years, and I'am 19 years old
 ## My plans on site
 - [X] come up with apperance
 - [ ] come up with original animations
